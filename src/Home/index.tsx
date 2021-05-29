@@ -5,6 +5,7 @@ import * as S from './styles';
 import {dataTechs} from '../utils/dataTechs';
 import {shuffle} from '../utils/shuffle';
 import {useStorage} from '../hooks/storage';
+import Button from '../components/ButtonItem';
 
 export function Home() {
   const {ranking, settingStorageRanking} = useStorage();
@@ -128,18 +129,16 @@ export function Home() {
         </S.Control>
 
         <S.Player>
-          {techs.map((tech, index) => {
-            const i = index + 1;
-            return (
-              <S.Button
-                key={String(index)}
-                bg={bgBtn === i ? i : 10}
-                disabled={disabled}
-                onPress={() => handleClick(i)}>
-                {bgBtn === i && <S.Txt>{tech}</S.Txt>}
-              </S.Button>
-            );
-          })}
+          {techs.map((tech, index) => (
+            <Button
+              key={String(index)}
+              bgBtn={bgBtn}
+              indexItem={index}
+              onClick={handleClick}
+              disabled={disabled}
+              tech={tech}
+            />
+          ))}
         </S.Player>
       </S.Content>
     </S.Container>
