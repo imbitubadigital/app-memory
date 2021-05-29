@@ -1,32 +1,75 @@
 import React, {useCallback, useEffect, useState} from 'react';
-
+import logo from '../assets/logo.png';
+import SoundPlayer from 'react-native-sound-player';
 import * as S from './styles';
-
-// import {} from './interfaces';
+import {dataTechs} from '../utils/dataTechs';
+import {shuffle} from '../utils/shuffle';
+import {useStorage} from '../hooks/storage';
 
 export function Home() {
+  const {ranking, settingStorageRanking} = useStorage();
   const [bgBtn, setBgBtn] = useState(10);
   const [machineData, setMachineData] = useState<number[]>([]);
   const [playerData, setPlayerData] = useState<number[]>([]);
   const [disabled, setDisabled] = useState(true);
+  const [currentRanking, setCurrentRanking] = useState(0);
+
+  const [disabledStart, setDisabledStart] = useState(false);
+  const [techs, setTechs] = useState(dataTechs);
+
+  useEffect(() => {
+    if (ranking < currentRanking) {
+      settingStorageRanking(currentRanking);
+    }
+  }, [currentRanking, ranking, settingStorageRanking]);
+
+  const handlePlayerAudio = useCallback((audio: string) => {
+    try {
+      SoundPlayer.setVolume(60);
+      SoundPlayer.playSoundFile(audio, 'mp3');
+    } catch (e) {
+      // console.log('cannot play the sound file', e);
+    }
+  }, []);
+
+  const handleReset = useCallback(() => {
+    setTechs(shuffle(dataTechs));
+    setCurrentRanking(0);
+    setBgBtn(10);
+    setMachineData([]);
+    setPlayerData([]);
+    setDisabled(true);
+    setDisabledStart(false);
+  }, []);
 
   useEffect(() => {
     if (machineData.length > 0) {
       setDisabled(true);
       for (let i = 0; i <= machineData.length; i++) {
-        setTimeout(function () {
+        setTimeout(() => {
           setBgBtn(i !== machineData.length ? machineData[i] : 10);
           setDisabled(i !== machineData.length ? true : false);
+          if (i !== machineData.length) {
+            handlePlayerAudio(String(`note${machineData[i]}`));
+          }
         }, i * 600);
       }
     }
-  }, [machineData]);
+  }, [machineData, handlePlayerAudio]);
 
   const playMachine = useCallback(() => {
+    setDisabledStart(true);
     setPlayerData([]);
-    const value = Math.floor(Math.random() * 9) + 1;
-    setMachineData(state => [...state, value]);
-  }, []);
+    while (true) {
+      let value = Math.floor(Math.random() * 9) + 1;
+      if (value === machineData[machineData.length]) {
+        return true;
+      } else {
+        setMachineData(state => [...state, value]);
+        return false;
+      }
+    }
+  }, [machineData]);
 
   useEffect(() => {
     if (playerData.length > 0 && playerData.length === machineData.length) {
@@ -35,89 +78,70 @@ export function Home() {
         setTimeout(() => {
           setBgBtn(10);
         }, 1000);
-
         setTimeout(() => {
+          setCurrentRanking(state => state + 1);
           playMachine();
-        }, 2000);
-      } else {
-        setBgBtn(10);
-        setDisabled(true);
-        setMachineData([]);
-        setPlayerData([]);
-
-        console.log('errou arrombado');
+        }, 1000);
       }
     }
-  }, [playerData, machineData, playMachine]);
+  }, [playerData, machineData, playMachine, handlePlayerAudio, handleReset]);
 
-  const handleClick = useCallback(value => {
-    setBgBtn(value);
-    setPlayerData(state => [...state, value]);
-  }, []);
-  const handleReset = useCallback(() => {
-    setBgBtn(10);
-    setMachineData([]);
-    setPlayerData([]);
-    setDisabled(true);
-  }, []);
+  const handleClick = useCallback(
+    value => {
+      if (machineData[playerData.length] === value) {
+        setBgBtn(value);
+        setPlayerData(state => [...state, value]);
+        handlePlayerAudio(String(`note${value}`));
+      } else {
+        handleReset();
+        const handelVoz = Math.floor(Math.random() * 9) + 1;
+        handlePlayerAudio(String(String(`voz${handelVoz}`)));
+      }
+    },
+    [handlePlayerAudio, machineData, playerData, handleReset],
+  );
 
   return (
     <S.Container>
       <S.Header>
-        <S.BtnStart onPress={playMachine}>
-          <S.TxtBtn>Start</S.TxtBtn>
-        </S.BtnStart>
-        <S.BtnStart onPress={handleReset}>
-          <S.TxtBtn>Reset</S.TxtBtn>
-        </S.BtnStart>
+        <S.Logo source={logo} resizeMode="contain" />
       </S.Header>
-      <S.Player>
-        <S.Button
-          bg={bgBtn === 1 ? 1 : 10}
-          disabled={disabled}
-          onPress={() => handleClick(1)}
-        />
-        <S.Button
-          bg={bgBtn === 2 ? 2 : 10}
-          disabled={disabled}
-          onPress={() => handleClick(2)}
-        />
-        <S.Button
-          bg={bgBtn === 3 ? 3 : 10}
-          disabled={disabled}
-          onPress={() => handleClick(3)}
-        />
-        <S.Button
-          bg={bgBtn === 4 ? 4 : 10}
-          disabled={disabled}
-          onPress={() => handleClick(4)}
-        />
-        <S.Button
-          bg={bgBtn === 5 ? 5 : 10}
-          disabled={disabled}
-          onPress={() => handleClick(5)}
-        />
-        <S.Button
-          bg={bgBtn === 6 ? 6 : 10}
-          disabled={disabled}
-          onPress={() => handleClick(6)}
-        />
-        <S.Button
-          bg={bgBtn === 7 ? 7 : 10}
-          disabled={disabled}
-          onPress={() => handleClick(7)}
-        />
-        <S.Button
-          bg={bgBtn === 8 ? 8 : 10}
-          disabled={disabled}
-          onPress={() => handleClick(8)}
-        />
-        <S.Button
-          bg={bgBtn === 9 ? 9 : 10}
-          disabled={disabled}
-          onPress={() => handleClick(9)}
-        />
-      </S.Player>
+
+      <S.Content>
+        <S.Points>
+          <S.BoxScore>
+            <S.Title>{String('<Score />')}</S.Title>
+            <S.PointsValue>{currentRanking}</S.PointsValue>
+          </S.BoxScore>
+          <S.BoxScore>
+            <S.Title>{String('<Ranking />')}</S.Title>
+            <S.PointsValue>{ranking}</S.PointsValue>
+          </S.BoxScore>
+        </S.Points>
+        <S.Control>
+          <S.BtnStart onPress={playMachine} disabled={disabledStart}>
+            <S.TxtBtn disabled={disabledStart}>Start</S.TxtBtn>
+          </S.BtnStart>
+          <S.BtnStart onPress={handleReset}>
+            <S.TxtBtn>Reset</S.TxtBtn>
+          </S.BtnStart>
+        </S.Control>
+
+        <S.Player>
+          {techs.map((tech, index) => {
+            const i = index + 1;
+            return (
+              <S.Button
+                key={String(index)}
+                bg={bgBtn === i ? i : 10}
+                disabled={disabled}
+                onPress={() => handleClick(i)}>
+                {bgBtn === i && <S.Txt>{tech}</S.Txt>}
+              </S.Button>
+            );
+          })}
+        </S.Player>
+      </S.Content>
     </S.Container>
   );
 }
