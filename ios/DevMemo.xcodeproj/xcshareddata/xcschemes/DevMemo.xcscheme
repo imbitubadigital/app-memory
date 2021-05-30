@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "memory.app"
-               BlueprintName = "memory"
-               ReferencedContainer = "container:memory.xcodeproj">
+               BuildableName = "DevMemo.app"
+               BlueprintName = "DevMemo"
+               ReferencedContainer = "container:DevMemo.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "memoryTests.xctest"
-               BlueprintName = "memoryTests"
-               ReferencedContainer = "container:memory.xcodeproj">
+               BuildableName = "DevMemoTests.xctest"
+               BlueprintName = "DevMemoTests"
+               ReferencedContainer = "container:DevMemo.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "memory.app"
-            BlueprintName = "memory"
-            ReferencedContainer = "container:memory.xcodeproj">
+            BuildableName = "DevMemo.app"
+            BlueprintName = "DevMemo"
+            ReferencedContainer = "container:DevMemo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "memory.app"
-            BlueprintName = "memory"
-            ReferencedContainer = "container:memory.xcodeproj">
+            BuildableName = "DevMemo.app"
+            BlueprintName = "DevMemo"
+            ReferencedContainer = "container:DevMemo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

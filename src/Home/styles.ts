@@ -1,7 +1,7 @@
 import styled from 'styled-components/native';
 
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
-import {ViewProps} from 'react-native';
+import {ViewProps, StyleSheet} from 'react-native';
 
 export const Container = styled.SafeAreaView`
   flex: 1;
@@ -14,18 +14,7 @@ export const Content = styled.View`
   background: #21222c;
   justify-content: center;
   align-items: center;
-`;
-
-export const Header = styled.View`
   width: 100%;
-  height: 100px;
-
-  justify-content: center;
-  align-items: flex-start;
-`;
-
-export const Logo = styled.Image`
-  height: 50px;
 `;
 
 export const Control = styled.View`
@@ -39,35 +28,6 @@ export const Control = styled.View`
   justify-content: space-between;
   align-items: center;
   padding: ${wp('3%')}px;
-`;
-
-export const Points = styled.View`
-  width: ${wp('90%')}px;
-
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
-  border-radius: 5px;
-  justify-content: space-between;
-  align-items: center;
-  padding: ${wp('2%')}px;
-`;
-
-export const BoxScore = styled.View`
-  width: ${wp('40%')}px;
-  justify-content: center;
-  align-items: center;
-`;
-
-export const Title = styled.Text`
-  color: #fff;
-  font-size: 16px;
-  margin-bottom: 5px;
-`;
-
-export const PointsValue = styled.Text`
-  color: #fff;
-  font-size: 22px;
 `;
 
 export const BtnStart = styled.TouchableOpacity`
@@ -98,6 +58,8 @@ export const Player = styled.View`
   justify-content: center;
   align-items: center;
   width: ${wp('90%')}px;
+  /* background: red; */
+  flex: 1;
 `;
 
 export const TxtButton = styled.Text`
@@ -108,3 +70,10 @@ export const Txt = styled.Text`
   color: #fff;
   font-size: 16px;
 `;
+
+export const Flat = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+});

@@ -1,11 +1,13 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import logo from '../assets/logo.png';
+import {FlatList} from 'react-native';
 import SoundPlayer from 'react-native-sound-player';
 import * as S from './styles';
 import {dataTechs} from '../utils/dataTechs';
 import {shuffle} from '../utils/shuffle';
 import {useStorage} from '../hooks/storage';
 import Button from '../components/ButtonItem';
+import {Header} from '../components/Header';
+import {Footer} from '../components/Footer';
 
 export function Home() {
   const {ranking, settingStorageRanking} = useStorage();
@@ -61,13 +63,14 @@ export function Home() {
   const playMachine = useCallback(() => {
     setDisabledStart(true);
     setPlayerData([]);
-    while (true) {
+    let checkEqual = true;
+    while (checkEqual) {
       let value = Math.floor(Math.random() * 9) + 1;
-      if (value === machineData[machineData.length]) {
-        return true;
+      if (value === machineData[machineData.length - 1]) {
+        checkEqual = true;
       } else {
         setMachineData(state => [...state, value]);
-        return false;
+        checkEqual = false;
       }
     }
   }, [machineData]);
@@ -104,42 +107,33 @@ export function Home() {
 
   return (
     <S.Container>
-      <S.Header>
-        <S.Logo source={logo} resizeMode="contain" />
-      </S.Header>
-
+      <Header />
       <S.Content>
-        <S.Points>
-          <S.BoxScore>
-            <S.Title>{String('<Score />')}</S.Title>
-            <S.PointsValue>{currentRanking}</S.PointsValue>
-          </S.BoxScore>
-          <S.BoxScore>
-            <S.Title>{String('<Ranking />')}</S.Title>
-            <S.PointsValue>{ranking}</S.PointsValue>
-          </S.BoxScore>
-        </S.Points>
-        <S.Control>
-          <S.BtnStart onPress={playMachine} disabled={disabledStart}>
-            <S.TxtBtn disabled={disabledStart}>Start</S.TxtBtn>
-          </S.BtnStart>
-          <S.BtnStart onPress={handleReset}>
-            <S.TxtBtn>Reset</S.TxtBtn>
-          </S.BtnStart>
-        </S.Control>
-
         <S.Player>
-          {techs.map((tech, index) => (
-            <Button
-              key={String(index)}
-              bgBtn={bgBtn}
-              indexItem={index}
-              onClick={handleClick}
-              disabled={disabled}
-              tech={tech}
-            />
-          ))}
+          <FlatList
+            contentContainerStyle={S.Flat.container}
+            data={techs}
+            numColumns={3}
+            renderItem={({item, index}) => (
+              <Button
+                key={String(index)}
+                bgBtn={bgBtn}
+                indexItem={index}
+                onClick={handleClick}
+                disabled={disabled}
+                tech={item}
+              />
+            )}
+            keyExtractor={item => String(item)}
+          />
         </S.Player>
+        <Footer
+          currentRanking={currentRanking}
+          ranking={ranking}
+          play={playMachine}
+          reset={handleReset}
+          disabled={disabledStart}
+        />
       </S.Content>
     </S.Container>
   );

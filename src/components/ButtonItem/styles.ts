@@ -16,12 +16,14 @@ const colors: any = {
 };
 interface PropsBtn extends TouchableOpacityProps {
   bg: number;
+  dynamicHeight: number;
 }
 export const Button = styled.TouchableOpacity<PropsBtn>`
   background: ${props => colors[props.bg]};
-  width: ${wp('26%')}px;
-  height: ${wp('26%')}px;
-  margin: ${wp('2%')}px;
+  flex: 1;
+  height: ${props => props.dynamicHeight}px;
+
+  margin: ${wp('1%')}px;
   border-radius: 5px;
   flex-direction: row;
   justify-content: center;
